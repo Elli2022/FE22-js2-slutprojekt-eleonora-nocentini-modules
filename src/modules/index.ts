@@ -82,7 +82,7 @@ submitButton.addEventListener("click", async (event) => {
 initializeEventListeners();
 
 // Funktion för att byta till "wall"-sidan efter inloggning
-function navigateToWall(userName: any) {
+function navigateToWall(userName: string) {
   // Rensa innehållet i body och skapa en ny layout för wall
   document.body.innerHTML = "";
 
@@ -93,7 +93,7 @@ function navigateToWall(userName: any) {
 
   // Textfält för att skriva inlägg
   const postInput = document.createElement("textarea");
-  postInput.placeholder = "Skriv ett inlägg...";
+  postInput.placeholder = `Vad gör du just nu? , ${userName}`;
   document.body.appendChild(postInput);
 
   // Knapp för att posta inlägg
@@ -115,9 +115,18 @@ function navigateToWall(userName: any) {
       postInput.value = ""; // Rensa textfältet efter postning
     }
   });
-}
 
-// Modifiera inloggningslogiken för att navigera till wall
-submitButton.addEventListener("click", async (event) => {
-  // Din befintliga inloggningslogik
-});
+  // Skapa en utloggningsknapp
+  const logoutButton = document.createElement("button");
+  logoutButton.textContent = "Logga ut";
+  document.body.appendChild(logoutButton);
+
+  // Event listener för utloggningsknappen
+  logoutButton.addEventListener("click", () => {
+    // Återgå till inloggningssidan eller huvudsidan
+    document.body.innerHTML = ""; // Rensa innehållet i body
+    // Här kan du lägga till kod för att återgå till inloggningssidan
+    // eller bara visa inloggningssidan igen
+  });
+}
+// ;
