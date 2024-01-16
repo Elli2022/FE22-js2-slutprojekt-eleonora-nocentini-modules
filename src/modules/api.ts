@@ -1,12 +1,14 @@
 // api.ts
 // Hanterar alla API-anrop och interaktioner med Firebase databasen
 
+// Uppdaterat UserInfo-gränssnitt
 export interface UserInfo {
   userName: string;
   password: string;
   status: string;
   imageurl: string;
   newUser: boolean;
+  posts?: { text: string; dateTime: string }[]; // Uppdatera här
 }
 
 interface FirebaseResponse {
@@ -46,6 +48,61 @@ export const saveUser = async (user: UserInfo): Promise<void> => {
   } catch (err) {
     console.error(err);
     throw new Error("Failed to save user information.");
+  }
+};
+
+// Funktion för att spara ett nytt inlägg med datum och tid
+export const savePost = async (
+  userName: string,
+  postText: string
+): Promise<void> => {
+  try {
+    const postDateTime = new Date().toLocaleString(); // Skapa en sträng med datum och tid
+    const post = {
+      text: postText,
+      dateTime: postDateTime,
+    };
+
+    // Hämta nuvarande användarinformation
+    const response = await fetch(`${baseUrl}users/${userName}.json`);
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
+    }
+    const user: UserInfo | null = await response.json();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Uppdatera användarens inlägg
+    const updatedUser = {
+      ...user,
+      posts: user.posts ? [...user.posts, post] : [post],
+    };
+
+    // Spara den uppdaterade användaren
+    await saveUser(updatedUser);
+  } catch (err) {
+    console.error(err);
+    throw new Error("Failed to save post");
+  }
+};
+
+// Funktion för att hämta alla inlägg för en specifik användare
+export const getUserPosts = async (
+  userName: string
+): Promise<{ text: string; dateTime: string }[]> => {
+  try {
+    const response = await fetch(`${baseUrl}users/${userName}.json`);
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
+    }
+    const user: UserInfo | null = await response.json();
+
+    return user && user.posts ? user.posts : [];
+  } catch (err) {
+    console.error(err);
+    return [];
   }
 };
 

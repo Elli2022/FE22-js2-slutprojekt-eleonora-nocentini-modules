@@ -1,8 +1,9 @@
 // src/modules/event-listeners.ts
 
-import { getElement } from "../modules/DOM-utils";
+import { getElement } from "./dom-utils";
 import { getUsers, saveUser, deleteUser } from "./api";
 import { isUsernameAvailable } from "./user-management";
+import { navigateToWall } from "./postsContainer";
 
 // Funktioner för att hantera användargränssnittsinteraktioner
 const initializeCreateAccount = () => {
@@ -70,8 +71,8 @@ const initializeLogin = () => {
       return;
     }
 
-    // Success: User found and password correct
-    // Implement success logic here
+    // Anropa navigateToWall efter en lyckad inloggning
+    navigateToWall(userName);
   });
 };
 

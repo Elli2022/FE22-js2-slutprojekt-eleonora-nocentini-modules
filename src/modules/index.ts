@@ -1,6 +1,6 @@
 // src/modules/index.ts
 
-import { getElement } from "./DOM-utils";
+import { getElement } from "./dom-utils";
 import { initializeEventListeners } from "./event-listeners";
 import { getUsers, saveUser, deleteUser } from "./api";
 import { isUsernameAvailable } from "./user-management";
@@ -19,11 +19,6 @@ function showMessage(message: string, color: string = "red") {
   messageElement.textContent = message;
   messageElement.style.color = color;
   form.appendChild(messageElement);
-}
-
-// Rensa meddelanden
-function clearMessage() {
-  messageElement.textContent = "";
 }
 
 // Logik för att skapa konto
@@ -51,6 +46,11 @@ createAccountButton.addEventListener("click", async () => {
     showMessage("Username is already taken.");
   }
 });
+
+// Rensa meddelanden
+function clearMessage() {
+  messageElement.textContent = "";
+}
 
 // Logik för inloggning
 submitButton.addEventListener("click", async (event) => {
@@ -81,6 +81,16 @@ submitButton.addEventListener("click", async (event) => {
 // Initiera event listeners
 initializeEventListeners();
 
+// Funktion för att återställa till förstasidan
+function resetToFirstPage() {
+  document.body.innerHTML = "";
+
+  // Återskapa inloggningsformuläret och andra förstasidans element
+  document.body.appendChild(form);
+  document.body.appendChild(createAccountButton);
+  document.body.appendChild(submitButton);
+}
+
 // Funktion för att byta till "wall"-sidan efter inloggning
 function navigateToWall(userName: string) {
   // Rensa innehållet i body och skapa en ny layout för wall
@@ -107,11 +117,13 @@ function navigateToWall(userName: string) {
   document.body.appendChild(postsContainer);
 
   // Event listener för postknappen
+  // När ett inlägg postas
   postButton.addEventListener("click", () => {
     if (postInput.value) {
       const post = document.createElement("p");
       post.textContent = postInput.value;
       postsContainer.appendChild(post);
+
       postInput.value = ""; // Rensa textfältet efter postning
     }
   });
@@ -123,10 +135,6 @@ function navigateToWall(userName: string) {
 
   // Event listener för utloggningsknappen
   logoutButton.addEventListener("click", () => {
-    // Återgå till inloggningssidan eller huvudsidan
-    document.body.innerHTML = ""; // Rensa innehållet i body
-    // Här kan du lägga till kod för att återgå till inloggningssidan
-    // eller bara visa inloggningssidan igen
+    resetToFirstPage();
   });
 }
-// ;
