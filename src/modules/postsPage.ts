@@ -1,9 +1,9 @@
 // postsPage.ts
 
-import { getUserPosts, savePost } from "./api";
+import { getLatestPostsFromAllUsers, getUserPosts, savePost } from "./api";
 import { initializeLoginPage } from "./loginPage"; // Importera funktionen
 
-export function navigateToPostsPage(userName: string) {
+export async function navigateToPostsPage(userName: string) {
   document.body.innerHTML = "";
 
   const header = document.createElement("h1");
@@ -37,6 +37,19 @@ export function navigateToPostsPage(userName: string) {
       postElement.textContent = postInput.value;
       postsContainer.appendChild(postElement);
       postInput.value = "";
+    }
+  });
+
+  const otherUsersPostsContainer = document.createElement("div");
+  otherUsersPostsContainer.id = "other-users-posts";
+  document.body.appendChild(otherUsersPostsContainer);
+
+  const otherUsersPosts = await getLatestPostsFromAllUsers();
+  otherUsersPosts.forEach((userPost) => {
+    if (userPost.userName !== userName) {
+      const userPostElement = document.createElement("p");
+      userPostElement.textContent = `${userPost.userName}: ${userPost.lastPost.text} (${userPost.lastPost.dateTime})`;
+      otherUsersPostsContainer.appendChild(userPostElement);
     }
   });
 

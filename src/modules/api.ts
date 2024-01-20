@@ -123,3 +123,30 @@ export const deleteUser = async (username: string): Promise<void> => {
     throw new Error("Failed to delete user.");
   }
 };
+
+// Ny funktion för att hämta de senaste inläggen från alla användare
+export const getLatestPostsFromAllUsers = async (): Promise<
+  { userName: string; lastPost: { text: string; dateTime: string } }[]
+> => {
+  try {
+    const response = await fetch(`${baseUrl}users.json`);
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
+    }
+    const users: FirebaseResponse | null = await response.json();
+    if (!users) return [];
+
+    return Object.values(users).map((user) => {
+      const lastPost = user.posts ? user.posts[user.posts.length - 1] : null;
+      return {
+        userName: user.userName,
+        lastPost: lastPost
+          ? { text: lastPost.text, dateTime: lastPost.dateTime }
+          : { text: "Inget inlägg", dateTime: "" },
+      };
+    });
+  } catch (err) {
+    console.error(err);
+    throw new Error("Failed to fetch latest posts from all users");
+  }
+};
