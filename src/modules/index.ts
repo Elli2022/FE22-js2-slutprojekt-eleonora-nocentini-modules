@@ -82,7 +82,6 @@ submitButton.addEventListener("click", async (event) => {
 initializeEventListeners();
 
 // Funktion för att återställa till förstasidan
-// Funktion för att återställa till förstasidan
 function resetToFirstPage() {
   document.body.innerHTML = ""; // Rensa innehållet först
 

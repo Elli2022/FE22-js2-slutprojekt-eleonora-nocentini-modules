@@ -11,7 +11,7 @@ export async function navigateToWall(userName: string) {
 
   // Textfält för att skriva inlägg
   const postInput = document.createElement("textarea");
-  postInput.placeholder = "Skriv ett inlägg...";
+  postInput.placeholder = `Vad gör du just nu, ${userName}!`;
   document.body.appendChild(postInput);
 
   // Knapp för att posta inlägg
