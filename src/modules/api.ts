@@ -63,7 +63,7 @@ export const savePost = async (
       dateTime: postDateTime,
     };
 
-    // Hämta nuvarande användarinformation
+    // Hämtar nuvarande användarinformation
     const response = await fetch(`${baseUrl}users/${userName}.json`);
     if (!response.ok) {
       throw new Error(`Error: ${response.status} ${response.statusText}`);

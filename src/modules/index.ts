@@ -2,7 +2,7 @@
 
 import { getElement } from "./dom-utils";
 import { initializeEventListeners } from "./event-listeners";
-import { getUsers, saveUser, deleteUser } from "./api";
+import { getUsers, saveUser, deleteUser, savePost, getUserPosts } from "./api";
 import { isUsernameAvailable } from "./user-management";
 
 const submitButton = getElement("submit-button") as HTMLButtonElement;
@@ -82,8 +82,9 @@ submitButton.addEventListener("click", async (event) => {
 initializeEventListeners();
 
 // Funktion för att återställa till förstasidan
+// Funktion för att återställa till förstasidan
 function resetToFirstPage() {
-  document.body.innerHTML = "";
+  document.body.innerHTML = ""; // Rensa innehållet först
 
   // Återskapa inloggningsformuläret och andra förstasidans element
   document.body.appendChild(form);
@@ -92,48 +93,51 @@ function resetToFirstPage() {
 }
 
 // Funktion för att byta till "wall"-sidan efter inloggning
-function navigateToWall(userName: string) {
-  // Rensa innehållet i body och skapa en ny layout för wall
+// Funktion för att byta till "wall"-sidan efter inloggning
+async function navigateToWall(userName: string) {
   document.body.innerHTML = "";
 
-  // Skapa en header med välkomstmeddelande
   const header = document.createElement("h1");
   header.textContent = `Välkommen till din Wall, ${userName}!`;
   document.body.appendChild(header);
 
-  // Textfält för att skriva inlägg
   const postInput = document.createElement("textarea");
   postInput.placeholder = `Vad gör du just nu? , ${userName}`;
   document.body.appendChild(postInput);
 
-  // Knapp för att posta inlägg
   const postButton = document.createElement("button");
   postButton.textContent = "Posta";
   document.body.appendChild(postButton);
 
-  // Behållare för inlägg
   const postsContainer = document.createElement("div");
   postsContainer.id = "posts";
   document.body.appendChild(postsContainer);
 
+  // Ladda in och visa användarens tidigare sparade poster
+  const posts = await getUserPosts(userName);
+  posts.forEach((post) => {
+    const postElement = document.createElement("p");
+    postElement.textContent = post.text;
+    postsContainer.appendChild(postElement);
+  });
+
   // Event listener för postknappen
-  // När ett inlägg postas
-  postButton.addEventListener("click", () => {
+  postButton.addEventListener("click", async () => {
     if (postInput.value) {
-      const post = document.createElement("p");
-      post.textContent = postInput.value;
-      postsContainer.appendChild(post);
+      await savePost(userName, postInput.value);
+
+      const postElement = document.createElement("p");
+      postElement.textContent = postInput.value;
+      postsContainer.appendChild(postElement);
 
       postInput.value = ""; // Rensa textfältet efter postning
     }
   });
 
-  // Skapa en utloggningsknapp
   const logoutButton = document.createElement("button");
   logoutButton.textContent = "Logga ut";
   document.body.appendChild(logoutButton);
 
-  // Event listener för utloggningsknappen
   logoutButton.addEventListener("click", () => {
     resetToFirstPage();
   });
