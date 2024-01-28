@@ -45,6 +45,7 @@ export async function navigateToPostsPage(userName: string) {
   document.body.appendChild(otherUsersPostsContainer);
 
   const otherUsersPosts = await getLatestPostsFromAllUsers();
+  console.log(otherUsersPosts);
   otherUsersPosts.forEach((userPost) => {
     if (userPost.userName !== userName) {
       const userPostElement = document.createElement("p");

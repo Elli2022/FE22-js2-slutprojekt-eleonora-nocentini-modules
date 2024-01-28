@@ -135,6 +135,7 @@ export const getLatestPostsFromAllUsers = async (): Promise<
     }
     const users: FirebaseResponse | null = await response.json();
     if (!users) return [];
+    console.log("Latest posts from all users:", Object.values(users));
 
     return Object.values(users).map((user) => {
       const lastPost = user.posts ? user.posts[user.posts.length - 1] : null;
